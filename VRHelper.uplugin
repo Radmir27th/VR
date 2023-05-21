@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "VRHelper",
+	"Description": "Provides a bunch of functionality to create project with VR",
+	"Category": "Other",
+	"CreatedBy": "27th",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "VRHelper",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
