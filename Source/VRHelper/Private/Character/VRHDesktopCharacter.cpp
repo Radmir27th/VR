@@ -5,9 +5,11 @@
 #include "EnhancedInputComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/WidgetComponent.h"
+#include "Camera/CameraComponent.h"
 
 AVRHDesktopCharacter::AVRHDesktopCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	PawnTarget = CreateDefaultSubobject<UWidgetComponent>("PawnTarget");
 	
 }
@@ -23,6 +25,13 @@ void AVRHDesktopCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		
 	}
 	
+}
+
+void AVRHDesktopCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	TargetLineTace();
 }
 
 void AVRHDesktopCharacter::Move(const FInputActionValue& Value)
@@ -42,4 +51,22 @@ void AVRHDesktopCharacter::Turn(const FInputActionValue& Value)
 void AVRHDesktopCharacter::JumpF(const FInputActionValue& Value)
 {
 	AVRHDesktopCharacter::Jump();
+}
+
+void AVRHDesktopCharacter::TargetLineTace()
+{
+	auto SocketTransform = CameraComponent->GetSocketTransform("LineStart");
+	const FVector TraceStart = SocketTransform.GetLocation();
+	const FVector TraceEnd = SocketTransform.GetRotation().GetForwardVector() + TraceEnd * TraceMaxDictance;
+
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+
+	if (HitResult.bBlockingHit)
+	{
+		
+		/*DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
+		DrawDebugSphere(GetWorld(), TraceEnd, 30.0f, 24, FColor::Green, false, 5.0f);*/
+	}
+
 }

@@ -28,10 +28,19 @@ public:
 protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void Tick(float DeltaTime) override;
 
 	void Move(const FInputActionValue& Value) override;
 	void Turn(const FInputActionValue& Value) override;
 	void JumpF(const FInputActionValue& Value) override;
-		
+
+private:
+	FHitResult HitResult;
+
+	UPROPERTY()
+	float TraceMaxDictance = 100;
+private:
+
+	void TargetLineTace();
 
 };
