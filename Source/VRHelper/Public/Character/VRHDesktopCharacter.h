@@ -10,7 +10,6 @@
  * 
  */
 
-class UWidgetComponent;
 
 UCLASS()
 class VRHELPER_API AVRHDesktopCharacter : public AVRHBaseCharacter
@@ -21,9 +20,15 @@ public:
 		AVRHDesktopCharacter();
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	UWidgetComponent *PawnTarget;
+	
+	
 
+
+	UFUNCTION(BlueprintCallable)
+	FHitResult& GetHitResult()  
+	{ 
+		return HitResult; 
+	}
 
 protected:
 
@@ -38,7 +43,7 @@ private:
 	FHitResult HitResult;
 
 	UPROPERTY()
-	float TraceMaxDictance = 100;
+	float TraceMaxDictance = 1500;
 private:
 
 	void TargetLineTace();

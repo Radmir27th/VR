@@ -3,14 +3,12 @@
 
 #include "Character/VRHDesktopCharacter.h"
 #include "EnhancedInputComponent.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/WidgetComponent.h"
 #include "Camera/CameraComponent.h"
 
 AVRHDesktopCharacter::AVRHDesktopCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PawnTarget = CreateDefaultSubobject<UWidgetComponent>("PawnTarget");
+	
 	
 }
 
@@ -57,7 +55,8 @@ void AVRHDesktopCharacter::TargetLineTace()
 {
 	auto SocketTransform = CameraComponent->GetSocketTransform("LineStart");
 	const FVector TraceStart = SocketTransform.GetLocation();
-	const FVector TraceEnd = SocketTransform.GetRotation().GetForwardVector() + TraceEnd * TraceMaxDictance;
+	const FVector Derection = SocketTransform.GetRotation().GetForwardVector();
+	const FVector TraceEnd = TraceStart + Derection * TraceMaxDictance;
 
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
@@ -65,8 +64,7 @@ void AVRHDesktopCharacter::TargetLineTace()
 	if (HitResult.bBlockingHit)
 	{
 		
-		/*DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-		DrawDebugSphere(GetWorld(), TraceEnd, 30.0f, 24, FColor::Green, false, 5.0f);*/
+		
 	}
 
 }
