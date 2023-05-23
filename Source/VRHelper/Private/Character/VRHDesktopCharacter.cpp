@@ -63,7 +63,7 @@ void AVRHDesktopCharacter::Select(const FInputActionValue& Value)
 			auto Component = HitResult.GetActor()->FindComponentByClass<UVRHSelect>();
 			if (auto VRHComponent = Cast<UVRHSelect>(Component))
 			{
-				VRHComponent->OnPressedSelect.Broadcast(VRHComponent, HitResult.GetActor());
+				VRHComponent->SelectComponent(HitResult);
 			}
 		}
 	}

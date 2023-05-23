@@ -16,6 +16,23 @@ UVRHSelect::UVRHSelect()
 }
 
 
+void UVRHSelect::SelectComponent(const FHitResult& HitResult)
+{
+
+	if (HitResult.bBlockingHit)
+	{
+		for (auto& Tag : SelectHighLightTags)
+		{
+			if (HitResult.GetComponent()->ComponentHasTag(Tag.Key))
+			{
+				OnPressedSelect.Broadcast(HitResult.GetComponent(), HitResult.GetActor());
+			}
+		}
+	}
+
+	
+}
+
 // Called when the game starts
 void UVRHSelect::BeginPlay()
 {
