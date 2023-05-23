@@ -35,6 +35,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		UInputAction* TurnAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+		UInputAction* SelectAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		UInputAction* JumpAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		UInputMappingContext* MappingContext;
@@ -42,6 +44,7 @@ protected:
 	virtual void Move(const FInputActionValue& Value) {};
 	virtual void Turn(const FInputActionValue& Value) {};
 	virtual void JumpF(const FInputActionValue& Value) {};
+	virtual void Select(const FInputActionValue& Value) {};
 	
 public:	
 	// Called every frame

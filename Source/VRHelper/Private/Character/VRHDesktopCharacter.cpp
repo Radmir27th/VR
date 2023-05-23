@@ -4,6 +4,7 @@
 #include "Character/VRHDesktopCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/VRHSelect.h"
 
 AVRHDesktopCharacter::AVRHDesktopCharacter()
 {
@@ -20,6 +21,8 @@ void AVRHDesktopCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AVRHDesktopCharacter::Move);
 		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &AVRHDesktopCharacter::Turn);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AVRHDesktopCharacter::JumpF);
+		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Started, this, &AVRHDesktopCharacter::Select);
+		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Completed, this, &AVRHDesktopCharacter::Released);
 		
 	}
 	
@@ -51,6 +54,34 @@ void AVRHDesktopCharacter::JumpF(const FInputActionValue& Value)
 	AVRHDesktopCharacter::Jump();
 }
 
+void AVRHDesktopCharacter::Select(const FInputActionValue& Value)
+{
+	if (Value.Get<bool>()) 
+	{
+		if (HitResult.bBlockingHit)
+		{
+			auto Component = HitResult.GetActor()->FindComponentByClass<UVRHSelect>();
+			if (auto VRHComponent = Cast<UVRHSelect>(Component))
+			{
+				VRHComponent->OnPressedSelect.Broadcast(VRHComponent, HitResult.GetActor());
+			}
+		}
+	}
+
+}
+
+void AVRHDesktopCharacter::Released(const FInputActionValue& Value)
+{
+	if (HitResult.bBlockingHit)
+	{
+		auto Component = HitResult.GetActor()->FindComponentByClass<UVRHSelect>();
+		if (auto VRHComponent = Cast<UVRHSelect>(Component))
+		{
+			VRHComponent->OnReleasedSelect.Broadcast(VRHComponent, HitResult.GetActor());
+		}
+	}
+}
+
 void AVRHDesktopCharacter::TargetLineTace()
 {
 	auto SocketTransform = CameraComponent->GetSocketTransform("LineStart");
@@ -61,10 +92,6 @@ void AVRHDesktopCharacter::TargetLineTace()
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
 
-	if (HitResult.bBlockingHit)
-	{
-		
-		
-	}
+	
 
 }
