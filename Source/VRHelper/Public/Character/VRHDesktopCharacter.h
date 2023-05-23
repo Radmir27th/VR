@@ -38,8 +38,10 @@ protected:
 	void Move(const FInputActionValue& Value) override;
 	void Turn(const FInputActionValue& Value) override;
 	void JumpF(const FInputActionValue& Value) override;
-	virtual void Select(const FInputActionValue& Value) override;
+	void Select(const FInputActionValue& Value) override;
 	void Released(const FInputActionValue& Value);
+	void Grab(const FInputActionValue& Value) override;
+	void GrabReleased(const FInputActionValue& Value) override;
 
 private:
 	FHitResult HitResult;

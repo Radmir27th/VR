@@ -11,8 +11,9 @@ public class VRHelper : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
-				"Components/VRHSelect.h"
-			}
+				"Components/VRHSelect.h",
+                "Components/VRHGrab.h"
+            }
 			);
 				
 		

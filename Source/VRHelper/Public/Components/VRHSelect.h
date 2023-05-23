@@ -20,19 +20,24 @@ public:
 	UVRHSelect();
 
 
+	UPROPERTY()
+		FColor HighlightColor;	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Select)
+		TMap<FName, bool> SelectHighLightTags;
+	
+public:
+	
+
 	UPROPERTY(BlueprintAssignable)
 		FOnReleasedSelect OnReleasedSelect;
 	UPROPERTY(BlueprintAssignable)
 		FOnPressedSelect OnPressedSelect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Select)
-		TMap<FName, bool> SelectHighLightTags;
-	
-
-	UFUNCTION(BlueprintCallable,BlueprintImplementableEvent)
-		 void OnSomePressed();
-
 
 	void SelectComponent(const FHitResult& HitResult);
+	void HightLightComponent(const FHitResult& HitResult);
+
+
 
 protected:
 	// Called when the game starts

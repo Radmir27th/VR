@@ -5,6 +5,8 @@
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/VRHSelect.h"
+#include "Components/VRHGrab.h"
+
 
 AVRHDesktopCharacter::AVRHDesktopCharacter()
 {
@@ -23,6 +25,8 @@ void AVRHDesktopCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AVRHDesktopCharacter::JumpF);
 		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Started, this, &AVRHDesktopCharacter::Select);
 		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Completed, this, &AVRHDesktopCharacter::Released);
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AVRHDesktopCharacter::Grab);
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AVRHDesktopCharacter::GrabReleased);
 		
 	}
 	
@@ -33,6 +37,9 @@ void AVRHDesktopCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	TargetLineTace();
+
+	
+
 }
 
 void AVRHDesktopCharacter::Move(const FInputActionValue& Value)
@@ -82,16 +89,38 @@ void AVRHDesktopCharacter::Released(const FInputActionValue& Value)
 	}
 }
 
+void AVRHDesktopCharacter::Grab(const FInputActionValue& Value)
+{
+	if (!HitResult.bBlockingHit) return;
+
+	if (auto Component = HitResult.GetActor()->FindComponentByClass<UVRHGrab>())
+	{
+		Component->SetGrabState();
+		HitResult.GetActor()->AttachToComponent(CameraComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("Grab"));
+		
+	}
+}
+
+void AVRHDesktopCharacter::GrabReleased(const FInputActionValue& Value)
+{
+	if (!HitResult.bBlockingHit) return;
+	
+	if (auto Component = HitResult.GetActor()->FindComponentByClass<UVRHGrab>())
+	{
+
+		Component->SetGrabState();
+		
+	}
+}
+
 void AVRHDesktopCharacter::TargetLineTace()
 {
 	auto SocketTransform = CameraComponent->GetSocketTransform("LineStart");
 	const FVector TraceStart = SocketTransform.GetLocation();
 	const FVector Derection = SocketTransform.GetRotation().GetForwardVector();
 	const FVector TraceEnd = TraceStart + Derection * TraceMaxDictance;
-
-
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
-
+	
 	
 
 }

@@ -33,6 +33,10 @@ void UVRHSelect::SelectComponent(const FHitResult& HitResult)
 	
 }
 
+void UVRHSelect::HightLightComponent(const FHitResult& HitResult)
+{
+}
+
 // Called when the game starts
 void UVRHSelect::BeginPlay()
 {
