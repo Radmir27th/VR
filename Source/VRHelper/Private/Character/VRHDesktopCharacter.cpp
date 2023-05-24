@@ -15,23 +15,6 @@ AVRHDesktopCharacter::AVRHDesktopCharacter()
 	
 }
 
-void AVRHDesktopCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked< UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AVRHDesktopCharacter::Move);
-		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &AVRHDesktopCharacter::Turn);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AVRHDesktopCharacter::JumpF);
-		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Started, this, &AVRHDesktopCharacter::Select);
-		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Completed, this, &AVRHDesktopCharacter::Released);
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AVRHDesktopCharacter::Grab);
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AVRHDesktopCharacter::GrabReleased);
-		
-	}
-	
-}
-
 void AVRHDesktopCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -77,7 +60,7 @@ void AVRHDesktopCharacter::Select(const FInputActionValue& Value)
 
 }
 
-void AVRHDesktopCharacter::Released(const FInputActionValue& Value)
+void AVRHDesktopCharacter::ReleasedSelect(const FInputActionValue& Value)
 {
 	if (HitResult.bBlockingHit)
 	{
@@ -95,23 +78,21 @@ void AVRHDesktopCharacter::Grab(const FInputActionValue& Value)
 
 	if (auto Component = HitResult.GetActor()->FindComponentByClass<UVRHGrab>())
 	{
-		Component->SetGrabState();
-		HitResult.GetActor()->AttachToComponent(CameraComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("Grab"));
+		if (!Component->GetGragState()) 
+		{
+			HitResult.GetActor()->AttachToComponent(CameraComponent, FAttachmentTransformRules::KeepWorldTransform, FName("Grab"));
+			Component->SetGrabState();
+		}
+		else
+		{
+			HitResult.GetActor()->DetachAllSceneComponents(CameraComponent, FDetachmentTransformRules::KeepWorldTransform);
+			Component->SetGrabState();
+		}
 		
 	}
 }
 
-void AVRHDesktopCharacter::GrabReleased(const FInputActionValue& Value)
-{
-	if (!HitResult.bBlockingHit) return;
-	
-	if (auto Component = HitResult.GetActor()->FindComponentByClass<UVRHGrab>())
-	{
 
-		Component->SetGrabState();
-		
-	}
-}
 
 void AVRHDesktopCharacter::TargetLineTace()
 {

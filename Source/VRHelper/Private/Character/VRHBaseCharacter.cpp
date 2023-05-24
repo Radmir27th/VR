@@ -46,6 +46,17 @@ void AVRHBaseCharacter::Tick(float DeltaTime)
 void AVRHBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked< UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AVRHBaseCharacter::Move);
+		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &AVRHBaseCharacter::Turn);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AVRHBaseCharacter::JumpF);
+		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Started, this, &AVRHBaseCharacter::Select);
+		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Completed, this, &AVRHBaseCharacter::ReleasedSelect);
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AVRHBaseCharacter::Grab);
+	
+
+	}
 
 }
 

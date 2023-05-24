@@ -20,6 +20,12 @@ public:
 	bool GetGragState() const { return IsGrabed;}
 	void SetGrabState() { IsGrabed = !IsGrabed;  }
 
+	UPROPERTY(EditAnywhere, Category = Attachment)
+		FName AttachSocketName;
+	UPROPERTY(EditAnywhere, Category = Attachment)
+		UStaticMesh *AttachComponent;
+		
+
 private:
 	bool IsGrabed = false;
 

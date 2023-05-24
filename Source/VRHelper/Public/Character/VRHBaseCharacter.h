@@ -47,8 +47,9 @@ protected:
 	virtual void Turn(const FInputActionValue& Value) {};
 	virtual void JumpF(const FInputActionValue& Value) {};
 	virtual void Select(const FInputActionValue& Value) {};
+	virtual void ReleasedSelect(const FInputActionValue& Value) {};
 	virtual void Grab(const FInputActionValue& Value) {};
-	virtual void GrabReleased(const FInputActionValue& Value) {};
+
 	
 public:	
 	// Called every frame
