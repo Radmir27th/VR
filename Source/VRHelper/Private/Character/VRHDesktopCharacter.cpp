@@ -80,8 +80,16 @@ void AVRHDesktopCharacter::Grab(const FInputActionValue& Value)
 	{
 		if (!Component->GetGragState()) 
 		{
+			if (Component->AttachSocketName != FName("None"))
+			{
+				Component->AttachToComponent(GetMesh());
+				Component->SetGrabState();
+				return;
+			}
+
 			HitResult.GetActor()->AttachToComponent(CameraComponent, FAttachmentTransformRules::KeepWorldTransform, FName("Grab"));
 			Component->SetGrabState();
+			
 		}
 		else
 		{

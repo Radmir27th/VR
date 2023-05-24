@@ -22,8 +22,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Attachment)
 		FName AttachSocketName;
-	UPROPERTY(EditAnywhere, Category = Attachment)
-		UStaticMesh *AttachComponent;
+	
+
+
+	void AttachToComponent(USceneComponent* Component);
 		
 
 private:
