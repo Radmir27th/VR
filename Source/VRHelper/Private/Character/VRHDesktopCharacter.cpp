@@ -46,15 +46,11 @@ void AVRHDesktopCharacter::JumpF(const FInputActionValue& Value)
 
 void AVRHDesktopCharacter::Select(const FInputActionValue& Value)
 {
-	if (Value.Get<bool>()) 
+	if (HitResult.bBlockingHit)
 	{
-		if (HitResult.bBlockingHit)
+		if (auto VRHComponent = Cast<UVRHSelect>(HitResult.GetActor()->FindComponentByClass<UVRHBaseComponent>()))
 		{
-			auto Component = HitResult.GetActor()->FindComponentByClass<UVRHSelect>();
-			if (auto VRHComponent = Cast<UVRHSelect>(Component))
-			{
-				VRHComponent->SelectComponent(HitResult);
-			}
+			VRHComponent->OnSelectCall(HitResult.GetActor(), HitResult.GetComponent(), true);
 		}
 	}
 
@@ -62,12 +58,11 @@ void AVRHDesktopCharacter::Select(const FInputActionValue& Value)
 
 void AVRHDesktopCharacter::ReleasedSelect(const FInputActionValue& Value)
 {
-	if (HitResult.bBlockingHit)
+	if (HitResult.bBlockingHit) 
 	{
-		auto Component = HitResult.GetActor()->FindComponentByClass<UVRHSelect>();
-		if (auto VRHComponent = Cast<UVRHSelect>(Component))
+		if (auto VRHComponent = Cast<UVRHSelect>(HitResult.GetActor()->FindComponentByClass<UVRHBaseComponent>()))
 		{
-			VRHComponent->OnReleasedSelect.Broadcast(VRHComponent, HitResult.GetActor());
+			VRHComponent->OnSelectCall(HitResult.GetActor(), HitResult.GetComponent(), false);
 		}
 	}
 }

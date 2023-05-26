@@ -4,14 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/VRHBaseComponent.h"
 #include "VRHSelect.generated.h"
+
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPressedSelect, UActorComponent*, Component, AActor*, Actor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnReleasedSelect, UActorComponent*, Component, AActor*, Actor);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class VRHELPER_API UVRHSelect : public UActorComponent
+class VRHELPER_API UVRHSelect : public UVRHBaseComponent
 {
 	GENERATED_BODY()
 
@@ -36,6 +38,8 @@ public:
 
 	void SelectComponent(const FHitResult& HitResult);
 	void HightLightComponent(const FHitResult& HitResult);
+
+	void OnSelectCall(AActor* Actor, USceneComponent* Component, bool bIsPressed) override;
 
 
 

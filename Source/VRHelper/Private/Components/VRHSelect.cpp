@@ -21,13 +21,7 @@ void UVRHSelect::SelectComponent(const FHitResult& HitResult)
 
 	if (HitResult.bBlockingHit)
 	{
-		for (auto& Tag : SelectHighLightTags)
-		{
-			if (HitResult.GetComponent()->ComponentHasTag(Tag.Key))
-			{
-				OnPressedSelect.Broadcast(HitResult.GetComponent(), HitResult.GetActor());
-			}
-		}
+		
 	}
 
 	
@@ -35,6 +29,24 @@ void UVRHSelect::SelectComponent(const FHitResult& HitResult)
 
 void UVRHSelect::HightLightComponent(const FHitResult& HitResult)
 {
+}
+
+void UVRHSelect::OnSelectCall(AActor* Actor, USceneComponent* Component, bool bIsPressed)
+{
+	if (bIsPressed) 
+	{
+		for (auto& Tag : SelectHighLightTags)
+		{
+			if (Component->ComponentHasTag(Tag.Key))
+			{
+				OnPressedSelect.Broadcast(Component, Actor);
+			}
+		}
+		return;
+	}
+
+	OnReleasedSelect.Broadcast(Component, Actor);
+
 }
 
 // Called when the game starts

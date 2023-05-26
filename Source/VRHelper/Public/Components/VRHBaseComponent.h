@@ -12,9 +12,17 @@ class VRHELPER_API UVRHBaseComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UVRHBaseComponent();
+
+
+public:
+
+	virtual void OnSelectCall(AActor* Actor, USceneComponent *Component, bool bIsPressed) {};
+	virtual void OnGrabCall(AActor* Actor, USceneComponent* Component) {};
+
+
 
 protected:
 	// Called when the game starts

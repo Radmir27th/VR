@@ -12,7 +12,8 @@ public class VRHelper : ModuleRules
 			new string[] {
 				// ... add public include paths required here ...
 				"Components/VRHSelect.h",
-                "Components/VRHGrab.h"
+                "Components/VRHGrab.h",
+                "Components/VRHBaseComponent.h"
             }
 			);
 				
