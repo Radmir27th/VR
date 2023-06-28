@@ -13,7 +13,13 @@ public class VRHelper : ModuleRules
 				// ... add public include paths required here ...
 				"Components/VRHSelect.h",
                 "Components/VRHGrab.h",
-                "Components/VRHBaseComponent.h"
+                "Components/VRHBaseComponent.h",
+                "Components/VRHCharacterMovementComponent.h",
+				"Character/VRHDesktopCharacter.h",
+                "Character/VRHBaseCharacter.h",
+                "Components/VRHWeaponComponent.h",
+				"Animation/VRHAnimNotify.h",
+				"TimerManager.h",
             }
 			);
 				
@@ -31,6 +37,8 @@ public class VRHelper : ModuleRules
 				"Core",
                 "EnhancedInput",
 				"UMG",
+				"VR",
+				"Engine"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

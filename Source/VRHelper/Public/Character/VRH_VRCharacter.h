@@ -14,5 +14,5 @@ class VRHELPER_API AVRH_VRCharacter : public AVRHBaseCharacter
 {
 	GENERATED_BODY()
 public:
-	AVRH_VRCharacter();
+	AVRH_VRCharacter(const FObjectInitializer& ObjInit);
 };

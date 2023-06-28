@@ -3,6 +3,6 @@
 
 #include "Character/VRH_VRCharacter.h"
 
-AVRH_VRCharacter::AVRH_VRCharacter()
+AVRH_VRCharacter::AVRH_VRCharacter(const FObjectInitializer& ObjInit) : Super(ObjInit)
 {
 }

@@ -5,14 +5,26 @@
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/VRHSelect.h"
+#include "Components/VRHWeaponComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Weapon/VRHPistolWeapon.h"
+#include "Weapon/VRHSwordWeapon.h"
 #include "Components/VRHGrab.h"
 
 
-AVRHDesktopCharacter::AVRHDesktopCharacter()
+AVRHDesktopCharacter::AVRHDesktopCharacter(const FObjectInitializer& ObjInit) : 
+	Super(ObjInit.SetDefaultSubobjectClass<UVRHCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
-	
+
+}
+
+float AVRHDesktopCharacter::GetMovenentDirection()
+{
+	const auto VelocityNormal = GetVelocity().GetSafeNormal();
+	const auto AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormal));
+	const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
+	return FMath::RadiansToDegrees(AngleBetween) * FMath::Sign(CrossProduct.Z);
 }
 
 void AVRHDesktopCharacter::Tick(float DeltaTime)
@@ -21,12 +33,11 @@ void AVRHDesktopCharacter::Tick(float DeltaTime)
 
 	TargetLineTace();
 
-	
-
 }
 
 void AVRHDesktopCharacter::Move(const FInputActionValue& Value)
 {
+	
 	FVector CurrentValue = Value.Get<FVector>();
 	AddMovementInput(GetActorForwardVector(), CurrentValue.Y);
 	AddMovementInput(GetActorRightVector(), CurrentValue.X);
@@ -46,30 +57,67 @@ void AVRHDesktopCharacter::JumpF(const FInputActionValue& Value)
 
 void AVRHDesktopCharacter::Select(const FInputActionValue& Value)
 {
-	if (HitResult.bBlockingHit)
-	{
-		if (auto VRHComponent = Cast<UVRHSelect>(HitResult.GetActor()->FindComponentByClass<UVRHBaseComponent>()))
-		{
-			VRHComponent->OnSelectCall(HitResult.GetActor(), HitResult.GetComponent(), true);
-		}
-	}
+	WeaponComponent->StartAttack();
+	//if (bHasWeaponInHand/* && Weapon*/)
+	//{
+	//	return;
+	//}
+	//if (HitResult.bBlockingHit)
+	//{
+	//	if (auto VRHComponent = Cast<UVRHSelect>(HitResult.GetActor()->FindComponentByClass<UVRHBaseComponent>()))
+	//	{
+	//		VRHComponent->OnSelectCall(HitResult.GetActor(), HitResult.GetComponent(), true);
+	//	}
+	//}
 
 }
 
 void AVRHDesktopCharacter::ReleasedSelect(const FInputActionValue& Value)
 {
-	if (HitResult.bBlockingHit) 
+
+
+
+
+	/*if (HitResult.bBlockingHit) 
 	{
 		if (auto VRHComponent = Cast<UVRHSelect>(HitResult.GetActor()->FindComponentByClass<UVRHBaseComponent>()))
 		{
 			VRHComponent->OnSelectCall(HitResult.GetActor(), HitResult.GetComponent(), false);
 		}
-	}
+	}*/
 }
 
 void AVRHDesktopCharacter::Grab(const FInputActionValue& Value)
 {
-	if (!HitResult.bBlockingHit) return;
+	WeaponComponent->OnRightClick();
+
+	if (Value.Get<bool>()) 
+	{
+		if (auto Weapon = Cast<AVRHSwordWeapon>(WeaponComponent->GetCurrentWeapon()))
+		{
+			bIsSwordInHand = true;
+			bIsPistolInHand = false;
+		}
+		else
+		{
+			bIsSwordInHand = false;
+			bIsPistolInHand = true;
+			SpringArm->TargetArmLength = 100;
+			SpringArm->TargetOffset.Set(0, 90, 0);
+			
+		}
+	}
+	else
+	{
+		bIsSwordInHand = false;
+		bIsPistolInHand = false;
+		SpringArm->TargetOffset.Set(0, 0, 0);
+		SpringArm->TargetArmLength = 300;
+		
+	}
+	OnRightClick.Broadcast(Value.Get<bool>());
+
+	/*if (!HitResult.bBlockingHit) return;
 
 	if (auto Component = HitResult.GetActor()->FindComponentByClass<UVRHGrab>())
 	{
@@ -79,6 +127,7 @@ void AVRHDesktopCharacter::Grab(const FInputActionValue& Value)
 			{
 				Component->AttachToComponent(GetMesh());
 				Component->SetGrabState();
+				bHasWeaponInHand = true;
 				return;
 			}
 
@@ -92,8 +141,21 @@ void AVRHDesktopCharacter::Grab(const FInputActionValue& Value)
 			Component->SetGrabState();
 		}
 		
-	}
+	}*/
 }
+
+void AVRHDesktopCharacter::Shift(const FInputActionValue& Value)
+{
+	bWantsToRun = Value.Get<bool>();
+}
+
+void AVRHDesktopCharacter::WeaponAppear(const FInputActionValue& Value)
+{
+	WeaponComponent->SwitchWeapon();
+	WeaponComponent->OnWPSwitch.Broadcast();
+}
+
+
 
 
 

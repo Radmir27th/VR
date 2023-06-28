@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Components/VRHCharacterMovementComponent.h"
 #include "VRHBaseCharacter.generated.h"
 
 
@@ -12,7 +13,8 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class UEnhancedInputComponent;
-
+class USpringArmComponent;
+class UVRHWeaponComponent;
 UCLASS()
 class VRHELPER_API AVRHBaseCharacter : public ACharacter
 {
@@ -20,7 +22,11 @@ class VRHELPER_API AVRHBaseCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AVRHBaseCharacter();
+	AVRHBaseCharacter(const FObjectInitializer& ObjInit);
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+		USpringArmComponent* SpringArm;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+		UVRHWeaponComponent *WeaponComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent *CameraComponent;
 
@@ -30,16 +36,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-		UInputAction* MoveAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-		UInputAction* TurnAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-		UInputAction *GrabAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-		UInputAction* SelectAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-		UInputAction* JumpAction;
+	TMap<FName, UInputAction*> InputActions;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		UInputMappingContext* MappingContext;
 
@@ -49,6 +49,8 @@ protected:
 	virtual void Select(const FInputActionValue& Value) {};
 	virtual void ReleasedSelect(const FInputActionValue& Value) {};
 	virtual void Grab(const FInputActionValue& Value) {};
+	virtual void Shift(const FInputActionValue& Value) {};
+	virtual void WeaponAppear(const FInputActionValue& Value) {};
 
 	
 public:	

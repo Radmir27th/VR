@@ -6,17 +6,26 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/VRHWeaponComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+
 
 
 // Sets default values
-AVRHBaseCharacter::AVRHBaseCharacter()
+AVRHBaseCharacter::AVRHBaseCharacter(const FObjectInitializer& ObjInit) :
+	Super(ObjInit.SetDefaultSubobjectClass<UVRHCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>("BaseCamera");
-	CameraComponent->SetupAttachment(GetRootComponent());
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	SpringArm->SetupAttachment(GetRootComponent());
+	SpringArm->bUsePawnControlRotation = true;
 
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("BaseCamera");
+	CameraComponent->SetupAttachment(SpringArm);
+
+	WeaponComponent = CreateDefaultSubobject<UVRHWeaponComponent>("WeaponComponent");
+	
 	
 }
 
@@ -35,6 +44,7 @@ void AVRHBaseCharacter::BeginPlay()
 	
 }
 
+
 // Called every frame
 void AVRHBaseCharacter::Tick(float DeltaTime)
 {
@@ -48,12 +58,17 @@ void AVRHBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked< UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AVRHBaseCharacter::Move);
-		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &AVRHBaseCharacter::Turn);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AVRHBaseCharacter::JumpF);
-		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Started, this, &AVRHBaseCharacter::Select);
-		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Completed, this, &AVRHBaseCharacter::ReleasedSelect);
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AVRHBaseCharacter::Grab);
+		if (InputActions.IsEmpty()) return;
+		EnhancedInputComponent->BindAction(InputActions["Move"], ETriggerEvent::Triggered, this, &AVRHBaseCharacter::Move);
+		EnhancedInputComponent->BindAction(InputActions["Turn"], ETriggerEvent::Triggered, this, &AVRHBaseCharacter::Turn);
+		EnhancedInputComponent->BindAction(InputActions["Jump"], ETriggerEvent::Started, this, &AVRHBaseCharacter::JumpF);
+		EnhancedInputComponent->BindAction(InputActions["LeftClick"], ETriggerEvent::Started, this, &AVRHBaseCharacter::Select);
+		/*EnhancedInputComponent->BindAction(InputActions["LeftClick"], ETriggerEvent::Completed, this, &AVRHBaseCharacter::ReleasedSelect);*/
+		EnhancedInputComponent->BindAction(InputActions["RightClick"], ETriggerEvent::Triggered, this, &AVRHBaseCharacter::Grab);
+		EnhancedInputComponent->BindAction(InputActions["RightClick"], ETriggerEvent::Completed, this, &AVRHBaseCharacter::Grab);
+		EnhancedInputComponent->BindAction(InputActions["Shift"], ETriggerEvent::Started, this, &AVRHBaseCharacter::Shift);
+		EnhancedInputComponent->BindAction(InputActions["Shift"], ETriggerEvent::Completed, this, &AVRHBaseCharacter::Shift);
+		EnhancedInputComponent->BindAction(InputActions["One"], ETriggerEvent::Started, this, &AVRHBaseCharacter::WeaponAppear);
 	
 
 	}
